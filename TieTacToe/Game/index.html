@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+   <link rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+    <!-- Tic Tac Toe board -->
+    <h1>Tic Tac Toe</h1>
+    <hr>
+    <br>
+
+    <!-- 3*3 -->
+    <div id="board">
+    </div>
+    <div class="notification_card" id="Notification">
+        <div class="card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvh01M6wqInKVd5UQxQP2dbMz0PjfoahkBGw&usqp=CAU"
+                alt="" width="90px">
+            <div class="para">
+                <p>YOU ENJOYING THIS GAME ?</p>
+                <button>YES</button> <button>NO</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var board;
+        var playerO = "O";
+        var playerX = "X";
+        var currPlayer = playerO;
+        var gameOver = false;
+
+        window.onload = function () {
+            setGame();
+
+        }
+        function setGame() {
+            board = [
+                [' ', ' ', ' '],
+                [' ', ' ', ' '],
+                [' ', ' ', ' ']
+            ]
+
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+
+                    let tile = document.createElement("div");
+                    tile.id = r.toString() + "-" + c.toString();
+                    tile.classList.add("tile");
+
+                    if (r == 0 || r == 1) {
+                        tile.classList.add("horizontal-line");
+                    }
+
+                    if (c == 0 || c == 1) {
+                        tile.classList.add("vertical-line");
+                    }
+                    tile.addEventListener("click", setTile);
+                    document.getElementById("board").append(tile);
+                }
+            }
+        }
+        function setTile() {
+            if (gameOver) {
+                return;
+            }
+
+            let coords = this.id.split("-") //"1-1" -> ["1" , "1"]
+            let r = parseInt(coords[0]);
+            let c = parseInt(coords[1]);
+
+
+            if (board[r][c] != ' ') {
+                return;
+            }
+
+            board[r][c] = currPlayer;
+            this.innerText = currPlayer;
+
+            if (currPlayer == playerO) {
+                currPlayer = playerX;
+            }
+            else {
+                currPlayer = playerO;
+            }
+            checkwinner();
+        }
+        function checkwinner() {
+            let winner = null;
+
+            // Check for horizontal lines
+            for (let r = 0; r < 3; r++) {
+                if (board[r][0] == board[r][1] && board[r][1] == board[r][2] && board[r][0] != ' ') {
+                    winner = board[r][0];
+                    break;
+                }
+            }
+
+            // Check for vertical lines
+            for (let c = 0; c < 3; c++) {
+                if (board[0][c] == board[1][c] && board[1][c] == board[2][c] && board[0][c] != ' ') {
+                    winner = board[0][c];
+                    break;
+                }
+            }
+
+            // Check for diagonals
+            if ((board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
+                (board[0][2] == board[1][1] && board[1][1] == board[2][0])) {
+                if (board[1][1] != ' ') {
+                    winner = board[1][1];
+                }
+            }
+
+            // Check if there is a winner
+            if (winner != null) {
+                showNotification(winner + " wins!");
+                gameOver = true;
+                return;
+            }
+
+            // Check for tie
+            let isTie = true;
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    if (board[r][c] == ' ') {
+                        isTie = false;
+                        break;
+                    }
+                }
+            }
+            if (isTie) {
+                showNotification("It's a tie!");
+                gameOver = true;
+                return;
+            }
+        }
+
+        function showNotification(message) {
+            var notificationCard = document.getElementById("Notification");
+            var para = notificationCard.querySelector(".para p");
+            para.innerText = message;
+            notificationCard.style.visibility = "visible";
+        }
+
+    </script>
+
+</body>
+
+</html>
